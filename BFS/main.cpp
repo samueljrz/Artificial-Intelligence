@@ -4,6 +4,7 @@
 
 #define Direcionado true
 #define Nao_direcionado false
+#define INFINITO 10000000
 
 enum Color { RED , BLACK, GRAY };
 vector<Color> colorList; // vetor auxiliar que armazena as cores dos vértices
@@ -58,9 +59,9 @@ bool BFS( Grafo* g ){
 int main(){
 
 	Grafo *g;
-    int vertices, origem, destino;
+  int vertices, origem, destino;
 
-    /* Abertura dos arquivos de entrada e saída*/
+  /* Abertura dos arquivos de entrada e saída*/
 	ifstream in;
 	ofstream out;
 	in.open("in.txt");

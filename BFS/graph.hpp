@@ -8,16 +8,15 @@ using namespace std;
 	class Grafo {
 
 	    public:
-	    	vector<int> *adjList; // Lista de adjacência
+	    	vector<pair<int,int>> *adjList; // Lista de adjacência
 	        int vertices; // Número de vértices
 	        bool direcionado; // Indicação da natureza do grafo
 
 	        Grafo(int numVertices, bool d);
 	        ~Grafo();
-	        void addAresta(int origem, int destino);
+	        void addAresta(int origem, int destino, int custo);
 	        void imprimeAdjList();
 	        int ordem();	
-	        
 	};
 
     /* Construtor e Destrutor */
@@ -27,7 +26,7 @@ using namespace std;
         direcionado = d;
 
         /* Aloca a lista com todos os vértices */
-        adjList = new vector<int>[vertices];
+        adjList = new vector<pair<int,int>>[vertices];
     }
     Grafo::~Grafo(){
 
@@ -41,15 +40,15 @@ using namespace std;
     }
 
     /* Métodos */
-    void Grafo::addAresta(int origem, int destino){
+    void Grafo::addAresta(int origem, int destino, int custo){
 
         /* Insere uma nova aresta na lista de adjacência do vertice(origem) */
-        adjList[origem].insert(adjList[origem].begin() ,destino);
+        adjList[origem].insert(make_pair(destino, custo));
 
         /* Verifica se o grafo é direcionado ou não */
-        if(!direcionado){
-            adjList[destino].insert(adjList[destino].begin() ,origem);
-        }
+        // if(!direcionado){
+        //     adjList[destino].insert(make_pair(adjList[destino].begin() ,origem));
+        // }
     }
 
     void Grafo::imprimeAdjList(){
