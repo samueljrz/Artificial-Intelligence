@@ -43,7 +43,7 @@ using namespace std;
     void Grafo::addAresta(int origem, int destino, int custo){
 
         /* Insere uma nova aresta na lista de adjacência do vertice(origem) */
-        adjList[origem].insert(make_pair(destino, custo));
+        adjList[origem].insert(adjList[origem].begin(), make_pair(destino, custo));
 
         /* Verifica se o grafo é direcionado ou não */
         // if(!direcionado){
@@ -55,7 +55,7 @@ using namespace std;
        for(int i = 0;i < vertices;i++){ 
             cout << "A lista de adjacência do vértice " << i << " :";
             for(auto aresta : adjList[i]){
-                cout << aresta << " ";
+                cout << aresta.first << " ";
             }
             cout << endl;     
        }
