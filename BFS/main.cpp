@@ -5,8 +5,8 @@
 #define Direcionado true
 #define Nao_direcionado false
 #define INFINITO 10000000
-
-enum Romenia { 
+/*
+enum romenia { 
 	Arad,
 	Zerind,
 	Sibiu,
@@ -28,10 +28,34 @@ enum Romenia {
 	Eforie,
 	Neamt
 };
-
+*/
 using namespace std;
 
 vector<int> distanceList, visitedList;
+
+int transf(string s) {
+
+	if(s == "Arad") return 0;
+	if(s == "Zerind") return 1;
+	if(s == "Sibiu") return 2;
+	if(s == "Timisoara") return 3;
+	if(s == "Oradea") return 4;
+	if(s == "Fagaras") return 5;
+	if(s == "Rimnicu_Vilcea") return 6;
+	if(s == "Lugoj") return 7;
+	if(s == "Bucharest") return 8;
+	if(s == "Pitesti") return 9;
+	if(s == "Craiova") return 10;
+	if(s == "Mehadia") return 11;
+	if(s == "Urziceni") return 12;
+	if(s == "Giurgiu") return 13;
+	if(s == "Drobeta") return 14;
+	if(s == "Vaslui") return 15;
+	if(s == "Hirsova") return 16;
+	if(s == "Iasi") return 17;
+	if(s == "Eforie") return 18;
+	if(s == "Neamt") return 29;
+}
 
 bool path( Grafo* g, int origem, int destino ){
 
@@ -98,7 +122,7 @@ int main(){
 
 	Grafo *g;
   int custo, vertices;
-	int origem, destino;
+	string origem, destino;
 
   /* Abertura dos arquivos de entrada e saída*/
 	ifstream in;
@@ -106,24 +130,27 @@ int main(){
 	in.open("in.txt");
 	out.open("out.txt");
 
-	while ( true ) {
+	in >> vertices;
 
-		in >> vertices;
-
-		/* Criação do Grafo */
-		g = new Grafo(vertices, Nao_direcionado);
-
-		if( vertices == 0 ) {
-			return 0;
-		}else {
-			/* Lendo os vértices */
-			while( in >> origem ) {
-	         	in >> destino;
-						in >> custo;
-	         	/* Adicionando as arestas */
-	         	g->addAresta(origem, destino, custo);
-	    }
+	/* Criação do Grafo */
+	g = new Grafo(vertices, Nao_direcionado);
+	if( vertices == 0 ) {
+		return 0;
+	}else {
+		/* Lendo os vértices */
+		while( in >> origem ) {
+					in >> destino;
+					in >> custo;
+					cout << origem << destino << custo << endl;
+					/* Adicionando as arestas */
+					g->addAresta(transf(origem), transf(destino), custo);
 	  }
+	}
+
+	//g->imprimeAdjList();
+
+	//int a = path(g, Arad, Bucharest);
+	//cout << a << endl;
 	     	// /* Chamada da função de coloração */
 		    // if (!path(g, origem, destino)){
 		    // 	out << "NAO"<< endl;
@@ -135,6 +162,6 @@ int main(){
 				// }
 		    // }
 		    delete g;
-	}
+
 	return 0;
 }

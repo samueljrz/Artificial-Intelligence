@@ -55,7 +55,7 @@ using namespace std;
        for(int i = 0;i < vertices;i++){ 
             cout << "A lista de adjacência do vértice " << i << " :";
             for(auto aresta : adjList[i]){
-                cout << aresta.first << " ";
+               cout << aresta.first << " ";
             }
             cout << endl;     
        }
