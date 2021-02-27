@@ -6,60 +6,99 @@
 #define Nao_direcionado false
 #define INFINITO 10000000
 
-enum Color { RED , BLACK, GRAY };
-vector<Color> colorList; // vetor auxiliar que armazena as cores dos vértices
+enum Romenia { 
+	Arad,
+	Zerind,
+	Sibiu,
+	Timisoara,
+	Oradea,
+	Fagaras,
+	Rimnicu_Vilcea,
+	Lugoj,
+	Bucharest,
+	Pitesti,
+	Craiova,
+	Mehadia,
+	Urziceni,
+	Giurgiu,
+	Drobeta,
+	Vaslui,
+	Hirsova,
+	Iasi,
+	Eforie,
+	Neamt
+};
 
 using namespace std;
 
-bool BFS( Grafo* g ){
+vector<int> distanceList, visitedList;
 
-	colorList.resize(g->ordem());
+bool path( Grafo* g, int origem, int destino ){
 
+	distanceList.resize(g->ordem());
+	visitedList.resize(g->ordem());
+	
 	/* Estrutura FILA utiilizado na BFS */
-	queue<int> queue;
+	queue<pair<int,int>> queue;
 
-	/* Preencher as cores de todos os vertices com GRAY*/
+	/* Preencher o vetor das distancias com INFINITO e
+			o vetor de visitas com false */
 	for (int i = 0; i < g->ordem() ;i++){
-		colorList[i] = GRAY;
+		distanceList[i] = INFINITO;
+		visitedList[i] = false;
 	}
 
-	/* Colore o primeiro vértice(0) e o adiciona da fila*/
-	colorList[0] = RED;
-	queue.push(0);
+	/* Define a distance do primeiro ponto para ele mesmo */
+	distanceList[origem] = 0;
 
-	for (int i=0; i < g->ordem() ;i++) {
-			if( colorList[i] == GRAY ) {
-				colorList[i] = RED;
-				queue.push(i);
-			}
+ /* Adiciona a distancia e a origem na fila de execução */
+	queue.push(make_pair(distanceList[origem], origem));
 
-			while(!(queue.empty())){
-				int vet = queue.front();
-				queue.pop();
-				/* Percorre a lista de adjacência de vet */
-				for(auto aux : g->adjList[vet]){
-					/* Se não foi visitado ainda */
-					if(colorList[aux] == GRAY){
-						if (colorList[vet] == RED) {
-							colorList[aux] = BLACK;
-						}else{
-							colorList[aux] = RED;
+	while( !(queue.empty()) ){
+
+		/* Adiciona a distancia e a origem na fila de execução */
+		pair<int,int> pairCurrent = queue.front();
+		int vertex = pairCurrent.second;
+
+		/* Retira o elemento atual da fila */
+		queue.pop();
+
+		/* Verifica se o vértice já foi visitado */
+		if ( visitedList[vertex] == false ) {
+			
+			/* Marca vertex como visitado */
+			visitedList[vertex] = true;
+
+			/* Percorre a lista de adjacência de vertex */
+			for(auto aux : g->adjList[vertex]){
+				
+				/* Obtem o vértice adjacente a vertex e 
+						o peso da aresta  									*/
+
+						int adjVertex = aux.second;
+						int costEdge = aux.first;
+
+						/* Decide se adiciona ou não adjVertex
+								como caminho, baseando sua escolha
+								no custo da aresta								*/
+
+						if ( distanceList[adjVertex] > distanceList[vertex] + costEdge) {
+
+								/* Atualiza a distância de adjVertex e o insere na fila */
+								distanceList[adjVertex] = distanceList[vertex] + costEdge;
+								queue.push(make_pair(distanceList[adjVertex], adjVertex));
 						}
-						queue.push(aux);
-					/* Se possui cor igual */
-					}else if(colorList[aux] == colorList[vet]){
-						return false;
-					}
-				}
 			}
+		}
 	}
-	return true;
+	return distanceList[destino];
 }
 
 int main(){
 
 	Grafo *g;
-  int vertices, origem, destino;
+  int custo, vertices;
+	int origem, destino;
 
   /* Abertura dos arquivos de entrada e saída*/
 	ifstream in;
@@ -80,25 +119,22 @@ int main(){
 			/* Lendo os vértices */
 			while( in >> origem ) {
 	         	in >> destino;
-
-	         	if ( (origem==0) && (destino==0) ) break;
-	         	else {
-	         		/* Adicionando as arestas */
-	         		g->addAresta(origem, destino);
-	        	}
-	     	}
-	     	/* Chamada da função de coloração */
-		    if (!BFS(g)){
-		    	out << "NAO"<< endl;
-		    }else{
-		    	out << "SIM" << endl;
-				for (int i=0 ; i<g->ordem() ; i++){
-					string color = (colorList[i]==0) ? "R" : "B";
-					out << i << " " <<  color << endl;
-				}
-		    }
+						in >> custo;
+	         	/* Adicionando as arestas */
+	         	g->addAresta(origem, destino, custo);
+	    }
+	  }
+	     	// /* Chamada da função de coloração */
+		    // if (!path(g, origem, destino)){
+		    // 	out << "NAO"<< endl;
+		    // }else{
+		    // 	out << "SIM" << endl;
+				// for (int i=0 ; i<g->ordem() ; i++){
+				// 	string color = (colorList[i]==0) ? "R" : "B";
+				// 	out << i << " " <<  color << endl;
+				// }
+		    // }
 		    delete g;
-		}
 	}
 	return 0;
 }

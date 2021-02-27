@@ -1,3 +1,4 @@
+23
 Arad Zerind 75
 Arad Sibiu 140
 Arad Timisoara 118
@@ -20,4 +21,4 @@ Urziceni Vaslui 142
 Urziceni Hirsova 98
 Vaslui Iasi 92
 Hirsova Eforie 86
-Iasi Neamt 87
+
