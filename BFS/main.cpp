@@ -5,7 +5,7 @@
 #define Direcionado true
 #define Nao_direcionado false
 #define INFINITO 10000000
-/*
+
 enum romenia { 
 	Arad,
 	Zerind,
@@ -28,7 +28,7 @@ enum romenia {
 	Eforie,
 	Neamt
 };
-*/
+
 using namespace std;
 
 vector<int> distanceList, visitedList;
@@ -141,15 +141,16 @@ int main(){
 		while( in >> origem ) {
 					in >> destino;
 					in >> custo;
-					cout << origem << destino << custo << endl;
+					//cout << origem << destino << custo << endl;
 					/* Adicionando as arestas */
 					g->addAresta(transf(origem), transf(destino), custo);
 	  }
 	}
 
 	//g->imprimeAdjList();
+	//out << Arad << Bucharest ;
+	int a = path(g, Arad, Bucharest);
 
-	//int a = path(g, Arad, Bucharest);
 	//cout << a << endl;
 	     	// /* Chamada da função de coloração */
 		    // if (!path(g, origem, destino)){
