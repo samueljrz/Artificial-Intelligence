@@ -54,7 +54,7 @@ int transf(string s) {
 	if(s == "Hirsova") return 16;
 	if(s == "Iasi") return 17;
 	if(s == "Eforie") return 18;
-	if(s == "Neamt") return 29;
+	if(s == "Neamt") return 19;
 }
 
 bool path( Grafo* g, int origem, int destino ){
@@ -63,7 +63,7 @@ bool path( Grafo* g, int origem, int destino ){
 	visitedList.resize(g->ordem());
 	
 	/* Estrutura FILA utiilizado na BFS */
-	queue<pair<int,int>> queue;
+	queue<pair<int,int>> queue;	
 
 	/* Preencher o vetor das distancias com INFINITO e
 			o vetor de visitas com false */
@@ -95,12 +95,11 @@ bool path( Grafo* g, int origem, int destino ){
 
 			/* Percorre a lista de adjacência de vertex */
 			for(auto aux : g->adjList[vertex]){
-				
 				/* Obtem o vértice adjacente a vertex e 
 						o peso da aresta  									*/
 
-						int adjVertex = aux.second;
-						int costEdge = aux.first;
+						int adjVertex = aux.first;
+						int costEdge = aux.second;
 
 						/* Decide se adiciona ou não adjVertex
 								como caminho, baseando sua escolha
@@ -119,7 +118,6 @@ bool path( Grafo* g, int origem, int destino ){
 }
 
 int main(){
-
 	Grafo *g;
   int custo, vertices;
 	string origem, destino;
@@ -148,10 +146,10 @@ int main(){
 	}
 
 	//g->imprimeAdjList();
-	//out << Arad << Bucharest ;
+	//cout << Arad << Bucharest ;
 	int a = path(g, Arad, Bucharest);
 
-	//cout << a << endl;
+	cout << a << endl;
 	     	// /* Chamada da função de coloração */
 		    // if (!path(g, origem, destino)){
 		    // 	out << "NAO"<< endl;

@@ -46,9 +46,9 @@ using namespace std;
         adjList[origem].insert(adjList[origem].begin(), make_pair(destino, custo));
 
         /* Verifica se o grafo é direcionado ou não */
-        // if(!direcionado){
-        //     adjList[destino].insert(make_pair(adjList[destino].begin() ,origem));
-        // }
+         if(!direcionado){
+            adjList[destino].insert(adjList[destino].begin(), make_pair(origem, custo));
+         }
     }
 
     void Grafo::imprimeAdjList(){
