@@ -57,7 +57,7 @@ int transf(string s) {
 	if(s == "Neamt") return 19;
 }
 
-bool path( Grafo* g, int origem, int destino ){
+int path( Grafo* g, int origem, int destino ){
 
 	distanceList.resize(g->ordem());
 	visitedList.resize(g->ordem());
@@ -68,7 +68,7 @@ bool path( Grafo* g, int origem, int destino ){
 	/* Preencher o vetor das distancias com INFINITO e
 			o vetor de visitas com false */
 	for (int i = 0; i < g->ordem() ;i++){
-		distanceList[i] = INFINITO;
+		distanceList[i] = 0; //INFINITO;
 		visitedList[i] = false;
 	}
 
@@ -76,45 +76,30 @@ bool path( Grafo* g, int origem, int destino ){
 	distanceList[origem] = 0;
 
  /* Adiciona a distancia e a origem na fila de execução */
-	queue.push(make_pair(distanceList[origem], origem));
+	queue.push(make_pair(origem, distanceList[origem]));
 
 	while( !(queue.empty()) ){
-
-		/* Adiciona a distancia e a origem na fila de execução */
 		pair<int,int> pairCurrent = queue.front();
-		int vertex = pairCurrent.second;
-
-		/* Retira o elemento atual da fila */
+		int vertex = pairCurrent.first;
 		queue.pop();
 
-		/* Verifica se o vértice já foi visitado */
-		if ( visitedList[vertex] == false ) {
-			
-			/* Marca vertex como visitado */
+		if(visitedList[vertex] == false){
 			visitedList[vertex] = true;
-
-			/* Percorre a lista de adjacência de vertex */
 			for(auto aux : g->adjList[vertex]){
-				/* Obtem o vértice adjacente a vertex e 
-						o peso da aresta  									*/
-
 						int adjVertex = aux.first;
 						int costEdge = aux.second;
-
-						/* Decide se adiciona ou não adjVertex
-								como caminho, baseando sua escolha
-								no custo da aresta								*/
-
-						if ( distanceList[adjVertex] > distanceList[vertex] + costEdge) {
-
-								/* Atualiza a distância de adjVertex e o insere na fila */
-								distanceList[adjVertex] = distanceList[vertex] + costEdge;
-								queue.push(make_pair(distanceList[adjVertex], adjVertex));
+						if(visitedList[adjVertex] == false) {
+							pair<int, int> children;
+							distanceList[adjVertex] = distanceList[vertex] + costEdge;
+							children = make_pair(adjVertex, distanceList[adjVertex]);
+							//cout << distanceList[adjVertex] << " ";
+							if(adjVertex == destino) return distanceList[destino];
+							queue.push(children);
 						}
 			}
 		}
 	}
-	return distanceList[destino];
+	return (-1);
 }
 
 int main(){
@@ -147,7 +132,7 @@ int main(){
 
 	//g->imprimeAdjList();
 	//cout << Arad << Bucharest ;
-	int a = path(g, Arad, Bucharest);
+	int a = path(g, Neamt, Bucharest);
 
 	cout << a << endl;
 	     	// /* Chamada da função de coloração */
