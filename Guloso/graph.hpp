@@ -40,7 +40,7 @@ using namespace std;
     }
 
     /* Métodos */
-    void Grafo::addAresta(int origem, int destino, int custo){
+    void Grafo::addAresta(int origem, int destino){
 
         /* Insere uma nova aresta na lista de adjacência do vertice(origem) */
         adjList[origem].insert(adjList[origem].begin() ,destino);
@@ -54,8 +54,8 @@ using namespace std;
     void Grafo::imprimeAdjList(){
        for(int i = 0;i < vertices;i++){ 
             cout << "A lista de adjacência do vértice " << i << " :";
-            for(auto aresta : adjList[i]){
-               cout << aresta.first << " ";
+            for( auto aresta : adjList[i] ){
+               cout << aresta << " ";
             }
             cout << endl;     
        }

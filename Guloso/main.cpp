@@ -56,14 +56,14 @@ int transf(string s) {
 	if(s == "Eforie") return 18;
 	if(s == "Neamt") return 19;
 }
-// precisa de alteração para trabalhar com fila de prioridade 
+
 int path( Grafo* g, int origem, int destino, map<int, int> val ){
 
 	distanceList.resize(g->ordem());
 	visitedList.resize(g->ordem());
 	
 	/* Estrutura FILA utiilizado na BFS */
-	queue<pair<int,int>> queue;	
+  priority_queue < pair<int, int>, vector<pair<int, int> >, greater<pair<int, int>> > pq;
 
 	/* Preencher o vetor das distancias com INFINITO e
 			o vetor de visitas com false */
@@ -73,40 +73,55 @@ int path( Grafo* g, int origem, int destino, map<int, int> val ){
 	}
 
 	/* Define a distance do primeiro ponto para ele mesmo */
-	distanceList[origem] = 0;
+	int distanceOrigem = val.find(origem)->second;
+	// cout << "Distancia origem" << distanceOrigem << endl;
+	distanceList[origem] = distanceOrigem;
 
  /* Adiciona a distancia e a origem na fila de execução */
-	queue.push(make_pair(origem, distanceList[origem]));
+	pq.push(make_pair(distanceList[origem], origem));
 
-	while( !(queue.empty()) ){
-		pair<int,int> pairCurrent = queue.front();
-		int vertex = pairCurrent.first;
-		queue.pop();
+	while( !(pq.empty()) ){
 
-		if(visitedList[vertex] == false){
+		pair<int, int> pairCurrent = pq.top();
+		pq.pop();
+
+		int vertex = pairCurrent.second;
+		// cout << "" << vertex << endl;
+
+		if( vertex == destino ) return distanceList[destino];
+
+		if ( visitedList[vertex] == false ){
+
 			visitedList[vertex] = true;
-			for(auto aux : g->adjList[vertex]){
-						int adjVertex = aux.first;
-						int costEdge = aux.second;
+
+			for( auto aux : g->adjList[vertex] ){
+
+						int adjVertex = aux;
+						int custoVertex = val.find(adjVertex)->second;
+
 						if(visitedList[adjVertex] == false) {
 							pair<int, int> children;
-							distanceList[adjVertex] = distanceList[vertex] + costEdge;
-							children = make_pair(adjVertex, distanceList[adjVertex]);
+							distanceList[adjVertex] = val.find(adjVertex)->second;
+							children = make_pair(distanceList[adjVertex], adjVertex);
 							//cout << distanceList[adjVertex] << " ";
-							if(adjVertex == destino) return distanceList[destino];
-							queue.push(children);
+							pq.push(children);
+							// cout << children.first << " " << children.second << endl;
 						}
 			}
+			int vertexCurrent = pq.top().second;
+			distanceList[vertexCurrent] = distanceList[vertex] + val.find(vertexCurrent)->second;
+			cout << vertexCurrent << endl;
 		}
 	}
 	return (-1);
 }
 
-int main(){
+int main(int argc, char *argv[]){
+
 	Grafo *g;
-  int custo, vertices, ;
+  int custo, vertices;
 	string origem, destino;
-	map<int, int> heur;
+	map<int, int> map;
 
   /* Abertura dos arquivos de entrada e saída*/
 	ifstream in, in2;
@@ -125,33 +140,25 @@ int main(){
 		/* Lendo os vértices */
 		while( in >> origem ) {
 					in >> destino;
-					in >> custo;
-					//cout << origem << destino << custo << endl;
+					// cout << origem << destino << endl;
 					/* Adicionando as arestas */
 					g->addAresta(transf(origem), transf(destino));
 	  }
 		while( in2 >> origem ) {
 					in2 >> custo;
-					heur.insert(pair<int, int>(transf(origem), custo))	
+					map.insert(pair<int, int>(transf(origem), custo));	
 	  }
 	}
 
-	//g->imprimeAdjList();
-	//cout << Arad << Bucharest ;
-	int a = path(g, Neamt, Bucharest, heur);
+	// Recebe os parâmetros
+	string firstParam = argv[1];
+	string secondParam = argv[2];
 
-	cout << a << endl;
-	     	// /* Chamada da função de coloração */
-		    // if (!path(g, origem, destino)){
-		    // 	out << "NAO"<< endl;
-		    // }else{
-		    // 	out << "SIM" << endl;
-				// for (int i=0 ; i<g->ordem() ; i++){
-				// 	string color = (colorList[i]==0) ? "R" : "B";
-				// 	out << i << " " <<  color << endl;
-				// }
-		    // }
-		    delete g;
+	int valueSolution = path(g, transf(firstParam), transf(secondParam), map);
+
+	cout << valueSolution << endl;
+
+	delete g;
 
 	return 0;
 }
