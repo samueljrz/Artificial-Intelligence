@@ -33,7 +33,7 @@ using namespace std;
 
 vector<int> distanceList, visitedList;
 
-int transf(string s) {
+int toInt(string s) {
 
 	if(s == "Arad") return 0;
 	if(s == "Zerind") return 1;
@@ -79,21 +79,30 @@ int path( Grafo* g, int origem, int destino ){
 	queue.push(make_pair(origem, distanceList[origem]));
 
 	while( !(queue.empty()) ){
+
+		/* Obtem o primeiro elemento da fila de execução e o retira da fila */
 		pair<int,int> pairCurrent = queue.front();
 		int vertex = pairCurrent.first;
 		queue.pop();
 
+		/* Verifica se já foi visitado. Se nunca foi, o marca como visitado */
 		if(visitedList[vertex] == false){
 			visitedList[vertex] = true;
-			for(auto aux : g->adjList[vertex]){
+
+			for( auto aux : g->adjList[vertex] ){
 						int adjVertex = aux.first;
 						int costEdge = aux.second;
+
+						/* Verifica se o vértice já foi visitado */
 						if(visitedList[adjVertex] == false) {
 							pair<int, int> children;
 							distanceList[adjVertex] = distanceList[vertex] + costEdge;
 							children = make_pair(adjVertex, distanceList[adjVertex]);
-							//cout << distanceList[adjVertex] << " ";
-							if(adjVertex == destino) return distanceList[destino];
+
+							/* Verifica se é o vértice de destino */
+							if( adjVertex == destino ) return distanceList[destino];
+
+							/* Adiciona filho na borda */
 							queue.push(children);
 						}
 			}
@@ -102,7 +111,7 @@ int path( Grafo* g, int origem, int destino ){
 	return (-1);
 }
 
-int main(){
+int main( int argc, char *argv[] ){
 	Grafo *g;
   int custo, vertices;
 	string origem, destino;
@@ -126,26 +135,23 @@ int main(){
 					in >> custo;
 					//cout << origem << destino << custo << endl;
 					/* Adicionando as arestas */
-					g->addAresta(transf(origem), transf(destino), custo);
+					g->addAresta(toInt(origem), toInt(destino), custo);
 	  }
 	}
 
-	//g->imprimeAdjList();
-	//cout << Arad << Bucharest ;
-	int a = path(g, Neamt, Bucharest);
+	// Recebe os parâmetros
+	string firstParam = argv[1];
+	string secondParam = argv[2];
 
-	cout << a << endl;
-	     	// /* Chamada da função de coloração */
-		    // if (!path(g, origem, destino)){
-		    // 	out << "NAO"<< endl;
-		    // }else{
-		    // 	out << "SIM" << endl;
-				// for (int i=0 ; i<g->ordem() ; i++){
-				// 	string color = (colorList[i]==0) ? "R" : "B";
-				// 	out << i << " " <<  color << endl;
-				// }
-		    // }
-		    delete g;
+	// Retorna o custo da solução
+	int valueSolution = path(g, toInt(firstParam), toInt(secondParam));
+
+	cout << valueSolution << endl;
+
+	delete g;
+
+	in.close();
+	out.close();
 
 	return 0;
 }

@@ -33,7 +33,7 @@ using namespace std;
 
 vector<int> distanceList, visitedList;
 
-int transf(string s) {
+int toInt(string s) {
 
 	if(s == "Arad") return 0;
 	if(s == "Zerind") return 1;
@@ -62,7 +62,8 @@ int path( Grafo* g, int origem, int destino, map<int, int> val ){
 	distanceList.resize(g->ordem());
 	visitedList.resize(g->ordem());
 	
-	/* Estrutura FILA utiilizado na BFS */
+	/* Fila de prioridade. Primeira posição = valor heurístico
+			Segunda posição = número referente a cidade						 */
   priority_queue < pair<int, int>, vector<pair<int, int> >, greater<pair<int, int>> > pq;
 
 	/* Preencher o vetor das distancias com INFINITO e
@@ -72,28 +73,30 @@ int path( Grafo* g, int origem, int destino, map<int, int> val ){
 		visitedList[i] = false;
 	}
 
-	/* Define a distance do primeiro ponto para ele mesmo */
+	/* Busca e Define o valor heurístico do ponto de partida */
 	int distanceOrigem = val.find(origem)->second;
-	// cout << "Distancia origem" << distanceOrigem << endl;
 	distanceList[origem] = distanceOrigem;
 
- /* Adiciona a distancia e a origem na fila de execução */
+ /* Adiciona o valor heurístico e a origem na fila de execução */
 	pq.push(make_pair(distanceList[origem], origem));
 
 	while( !(pq.empty()) ){
 
+		/* Obtem o topo da fila de execução e o retira da fila */
 		pair<int, int> pairCurrent = pq.top();
 		pq.pop();
 
+		/* Obtem o número da cidade */
 		int vertex = pairCurrent.second;
-		// cout << "" << vertex << endl;
 
+		/* Verifica se encontrou o destino */
 		if( vertex == destino ) return distanceList[destino];
 
 		if ( visitedList[vertex] == false ){
 
 			visitedList[vertex] = true;
 
+			/* Percorre a lista de adj do vértice que se deseja expandir */
 			for( auto aux : g->adjList[vertex] ){
 
 						int adjVertex = aux;
@@ -103,20 +106,20 @@ int path( Grafo* g, int origem, int destino, map<int, int> val ){
 							pair<int, int> children;
 							distanceList[adjVertex] = val.find(adjVertex)->second;
 							children = make_pair(distanceList[adjVertex], adjVertex);
-							//cout << distanceList[adjVertex] << " ";
+							/* Adiciona o filho na borda */
 							pq.push(children);
-							// cout << children.first << " " << children.second << endl;
 						}
 			}
+			/* Soma o custo heurístico do top da fila de execução
+					com o custo acumulado dos vértices já escolhidos  */
 			int vertexCurrent = pq.top().second;
 			distanceList[vertexCurrent] = distanceList[vertex] + val.find(vertexCurrent)->second;
-			cout << vertexCurrent << endl;
-		}
+			}
 	}
 	return (-1);
 }
 
-int main(int argc, char *argv[]){
+int main( int argc, char *argv[] ){
 
 	Grafo *g;
   int custo, vertices;
@@ -137,16 +140,16 @@ int main(int argc, char *argv[]){
 	if( vertices == 0 ) {
 		return 0;
 	}else {
-		/* Lendo os vértices */
+		/* Criando as aresta do grafo */
 		while( in >> origem ) {
 					in >> destino;
-					// cout << origem << destino << endl;
 					/* Adicionando as arestas */
-					g->addAresta(transf(origem), transf(destino));
+					g->addAresta(toInt(origem), toInt(destino));
 	  }
+		/* Preenche o map com Cidade e Custo */
 		while( in2 >> origem ) {
 					in2 >> custo;
-					map.insert(pair<int, int>(transf(origem), custo));	
+					map.insert(pair<int, int>(toInt(origem), custo));	
 	  }
 	}
 
@@ -154,11 +157,16 @@ int main(int argc, char *argv[]){
 	string firstParam = argv[1];
 	string secondParam = argv[2];
 
-	int valueSolution = path(g, transf(firstParam), transf(secondParam), map);
+	// Retorna o custo da solução
+	int valueSolution = path(g, toInt(firstParam), toInt(secondParam), map);
 
 	cout << valueSolution << endl;
 
 	delete g;
+
+	in.close();
+	in2.close();
+	out.close();
 
 	return 0;
 }
